@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>Portal 1</title>
+    <title>DEVMS - Decentralized Voting System</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -66,6 +66,29 @@
           <div class="list-group-item">
             <span> <b>Gas Price </b> </span><br>
             <span style="font-size: 9px" id="gasPrice"> </span>
+          </div>
+         
+        </div>
+      </div>
+
+      <!-- List-Group Panel -->
+      <div id="#transaction_panel" class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title"><span class="glyphicon glyphicon-transfer"></span> Recent Voter Transaction</h1>
+        </div>
+        <div id="recent_transaction" class="list-group">
+
+          <div  class="list-group-item">
+            <span> <b>Transaction Hash </b> </span>
+            <span style="font-size: 7px" id="transaction_hash"> </span>
+          </div>
+           <div  class="list-group-item">
+            <span> <b>Block Number </b> </span>
+            <span style="font-size: 12px" id="block_number"> </span>
+          </div>
+          <div  class="list-group-item">
+            <span> <b>Block Hash </b> </span>
+            <span style="font-size: 7px" id="block_hash"> </span>
           </div>
          
         </div>
@@ -131,7 +154,7 @@
           </h3>
         </div>
         <div class="panel-body">
-          <form >
+          <form id="add_candidate_panel" onSubmit="App.addCandidate(); return false;">
             <div class="form-group">
               <input type="text" class="form-control" id="c_name" name="c_name" placeholder="Name">
             </div>

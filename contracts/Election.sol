@@ -22,15 +22,30 @@ contract Election {
     event votedEvent (
         uint indexed _candidateId
     );
+     // voted event
+    event candidateAdded (
+        uint indexed _candidateId
+    );
 
     constructor () public {
-        addCandidate("Hassan Tariq");
-        addCandidate("Hasna Elhilali");
+        privatelyAddCandidate("Hassan Tariq");
+        privatelyAddCandidate("Hasna Elhilali");
     }
 
-    function addCandidate (string memory _name) private {
+    function privatelyAddCandidate (string memory _name) private  {
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
+    }
+
+    function addCandidate (string memory _name) public  {
+        // require that they haven't voted before
+        require(!voters[msg.sender]);
+
+
+        candidatesCount ++;
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
+        // trigger voted event
+        emit candidateAdded(candidatesCount);
     }
 
     function vote (uint _candidateId) public {

@@ -47,10 +47,22 @@ App = {
         fromBlock: 0,
         toBlock: 'latest'
       }).watch(function(error, event) {
-        console.log("event triggered", event)
+        console.log("event triggered", event);
+        if(event)
+        {
+          $("#transaction_hash").html(event.transactionHash);
+          $("#block_number").html(event.blockNumber);
+          $("#block_hash").html(event.blockHash);
+          
+        }else
+        {
+           $("#transaction_panel").hide();
+          
+        }
         // Reload when a new vote is recorded
-        App.render();
+        
       });
+
     });
   },
 
@@ -89,15 +101,21 @@ App = {
       }
     });
 
+    App.loadContractsData();
+    
+  },
+// Load contract data
+  loadContractsData: function(){
 
-
-    // Load contract data
+    var loader = $("#loader");
+    var content = $("#content");
     App.contracts.Election.deployed().then(function(instance) {
       electionInstance = instance;
       return electionInstance.candidatesCount();
     }).then(function(candidatesCount) {
       var candidatesResults = $("#candidatesResults");
       candidatesResults.empty();
+
 
       var candidatesSelect = $('#candidatesSelect');
       candidatesSelect.empty();
@@ -122,6 +140,7 @@ App = {
       // Do not allow a user to vote
       if(hasVoted) {
         $('#voting_panel').hide();
+        $('#add_candidate_panel').hide();
       }
       loader.hide();
       content.show();
@@ -138,23 +157,25 @@ App = {
       // Wait for votes to update
       $("#content").hide();
       $("#loader").show();
+      location.reload();
     }).catch(function(err) {
       console.error(err);
     });
   },
 
-  // addCandidate: function() {
-  //   var c_name = $('#c_name').val();
-  //   App.contracts.Election.deployed().then(function(instance) {
-  //     return instance.addCandidate(c_name);
-  //   }).then(function(result) {
-  //     // Wait for votes to update
-  //     $("#content").hide();
-  //     $("#loader").show();
-  //   }).catch(function(err) {
-  //     console.error(err);
-  //   });
-  // },
+  addCandidate: function() {
+    var c_name = $('#c_name').val();
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance.addCandidate(c_name,{ from: App.account });
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").hide();
+      $("#loader").show();
+      location.reload();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
 
   //CountDown Javascript 
   runTimer: function()
