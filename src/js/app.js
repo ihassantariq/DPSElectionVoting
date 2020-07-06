@@ -2,6 +2,8 @@ App = {
   web3Provider: null,
   contracts: {},
   account: '0x0',
+  gasPrice: 0,
+  etherBalance:0,
   hasVoted: false,
 
   init: function() {
@@ -59,14 +61,35 @@ App = {
 
     loader.show();
     content.hide();
+    App.runTimer();
 
     // Load account data
     web3.eth.getCoinbase(function(err, account) {
       if (err === null) {
         App.account = account;
         $("#accountAddress").html("Your Account: " + account);
+        $("#account").html(account);
+        //Get Balance
+        web3.eth.getBalance(App.account,function(err, balance) {
+          if (err === null) {
+            App.etherBalance = balance;
+            $("#balance").html(web3.fromWei(balance.toNumber(),'ether'));
+          }
+        });
       }
     });
+
+    
+    //Get Gas Price
+
+    web3.eth.getGasPrice(function(err, price) {
+      if (err === null) {
+        App.etherBalance = price;
+        $("#gasPrice").html(web3.fromWei(price.toNumber(),'ether'));
+      }
+    });
+
+
 
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
@@ -98,7 +121,7 @@ App = {
     }).then(function(hasVoted) {
       // Do not allow a user to vote
       if(hasVoted) {
-        $('form').hide();
+        $('#voting_panel').hide();
       }
       loader.hide();
       content.show();
@@ -118,7 +141,55 @@ App = {
     }).catch(function(err) {
       console.error(err);
     });
+  },
+
+  // addCandidate: function() {
+  //   var c_name = $('#c_name').val();
+  //   App.contracts.Election.deployed().then(function(instance) {
+  //     return instance.addCandidate(c_name);
+  //   }).then(function(result) {
+  //     // Wait for votes to update
+  //     $("#content").hide();
+  //     $("#loader").show();
+  //   }).catch(function(err) {
+  //     console.error(err);
+  //   });
+  // },
+
+  //CountDown Javascript 
+  runTimer: function()
+  {
+        // Set the date we're counting down to
+      var countDownDate = new Date('Jul 10, 2020');
+
+      // Update the count down every 1 second
+      var x = setInterval(function() {
+
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the result in the element with id="demo"
+      document.getElementById("time_remaing").innerHTML = days + "d " + hours + "h "
+      + minutes + "m " + seconds + "s ";
+
+      // If the count down is finished, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("time_remaing").innerHTML = "EXPIRED";
+      }
+    }, 1000);
   }
+
+
 };
 
 $(function() {
