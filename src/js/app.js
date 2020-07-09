@@ -102,9 +102,11 @@ App = {
     });
 
     App.loadContractsData();
+    App.loadMessagesData();
     
   },
-// Load contract data
+
+  // Load contract data
   loadContractsData: function(){
 
     var loader = $("#loader");
@@ -149,6 +151,34 @@ App = {
     });
   },
 
+  // Load Messages data
+  loadMessagesData: function(){
+
+    var content = $("#messageContent");
+    App.contracts.Election.deployed().then(function(instance) {
+      electionInstance = instance;
+      return electionInstance.messagesCount();
+    }).then(function(messagesCount) {
+      var messagesResults = $("#messagesResult");
+      messagesResults.empty();
+
+
+      for (var i = 1; i <= messagesCount; i++) {
+        electionInstance.messages(i).then(function(message) {
+        
+          // Render candidate Result
+          var messagesTemplate = "<tr><td>" + web3.eth.recover(message) + "</td></tr>"
+          messagesResults.append(messagesTemplate);
+
+        
+        });
+      }
+      return electionInstance.voters(App.account);
+    }).catch(function(error) {
+      console.warn(error);
+    });
+  },
+
   castVote: function() {
     var candidateId = $('#candidatesSelect').val();
     App.contracts.Election.deployed().then(function(instance) {
@@ -167,6 +197,23 @@ App = {
     var c_name = $('#c_name').val();
     App.contracts.Election.deployed().then(function(instance) {
       return instance.addCandidate(c_name,{ from: App.account });
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").hide();
+      $("#loader").show();
+      location.reload();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+
+  addMessage: function() {
+    var message = $('#message').val();
+     App.contracts.Election.deployed().then(function(instance) {
+
+      var Accounts = require('web3-eth-accounts');
+      var accounts = new Accounts('ws://localhost:7545');
+     return instance.addCandidate(accounts.hashMessage(message),{ from: App.account });
     }).then(function(result) {
       // Wait for votes to update
       $("#content").hide();

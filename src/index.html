@@ -111,7 +111,7 @@
           <div id="loader">
             <p class="text-center">Loading...</p>
           </div>
-          <div id="content" style="display: none;">
+          <div id="content" style="display: none; overflow:scroll; height:500px;" >
             <span>Time Remaining:</span> 
             <span id="time_remaing"></span>
             <table class="table">
@@ -145,7 +145,7 @@
     <!-- Right Column -->
     <div class="col-sm-3">
 
-      <!-- Form --> 
+      <!-- Add Candidate Form --> 
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">
@@ -162,6 +162,40 @@
           </form>
         </div>
       </div>
+
+        <!-- Add Message Form --> 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <span class="glyphicon glyphicon-plus-sign"></span> 
+            Add Message
+          </h3>
+        </div>
+        <div class="panel-body">
+          <form id="add_candidate_panel" onSubmit="App.addMessage(); return false;">
+            <div class="form-group">
+              <input type="text" class="form-control" id="message" name="message" placeholder="Message">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div>
+      </div>
+
+     <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <span class="glyphicon glyphicon-comment"></span> 
+            Messages
+          </h3>
+        </div>
+        <div class="panel-body" id="messageContent" style="overflow:scroll; height:200px;">
+            <table class="table" >
+              <tbody id="messagesResult">
+              </tbody>
+            </table>
+        </div>
+      </div>
+
     </div><!--/Right Column -->
 
   </div><!--/container-fluid-->

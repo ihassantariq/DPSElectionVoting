@@ -15,32 +15,57 @@ contract Election {
     // Store Candidates
     // Fetch Candidate
     mapping(uint => Candidate) public candidates;
+
+
+    //Showing messages 
+    mapping(uint => string) public messages;
+
     // Store Candidates Count
     uint public candidatesCount;
+
+    // Store Candidates Count
+    uint public messagesCount;
 
     // voted event
     event votedEvent (
         uint indexed _candidateId
     );
-     // voted event
+    
+    // voted event
     event candidateAdded (
-        uint indexed _candidateId
+        uint indexed _candidateCount
+    );
+
+     // voted event
+    event messageAdded (
+        uint indexed _messageCount
     );
 
     constructor () public {
+        
         privatelyAddCandidate("Hassan Tariq");
         privatelyAddCandidate("Hasna Elhilali");
+        // addMessage("Message # 1");
+        //addMessage("Message # 2");
     }
 
+    //function for adding message
+    function addMessage(string memory _message) public {
+        messagesCount ++;
+        messages[messagesCount] = _message;
+        emit messageAdded(messagesCount);
+    }
+
+    //Adding candidate privately 
     function privatelyAddCandidate (string memory _name) private  {
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
 
+    //Adding others add candidate
     function addCandidate (string memory _name) public  {
         // require that they haven't voted before
         require(!voters[msg.sender]);
-
 
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
@@ -48,6 +73,7 @@ contract Election {
         emit candidateAdded(candidatesCount);
     }
 
+    //For for particular candidate
     function vote (uint _candidateId) public {
         // require that they haven't voted before
         require(!voters[msg.sender]);
