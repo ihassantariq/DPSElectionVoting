@@ -45,8 +45,8 @@ contract Election {
         
         privatelyAddCandidate("Hassan Tariq");
         privatelyAddCandidate("Hasna Elhilali");
-        // addMessage("Message # 1");
-        //addMessage("Message # 2");
+        addMessage("Message # 1");
+        addMessage("Message # 2");
     }
 
     //function for adding message

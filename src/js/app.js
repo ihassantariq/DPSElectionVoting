@@ -163,11 +163,11 @@ App = {
       messagesResults.empty();
 
 
-      for (var i = 1; i <= messagesCount; i++) {
+      for (var i=messagesCount; i>=1; i--) {
         electionInstance.messages(i).then(function(message) {
         
           // Render candidate Result
-          var messagesTemplate = "<tr><td>" + web3.eth.recover(message) + "</td></tr>"
+          var messagesTemplate = "<tr><td>" + message + "</td></tr>"
           messagesResults.append(messagesTemplate);
 
         
@@ -211,14 +211,14 @@ App = {
     var message = $('#message').val();
      App.contracts.Election.deployed().then(function(instance) {
 
-      var Accounts = require('web3-eth-accounts');
-      var accounts = new Accounts('ws://localhost:7545');
-     return instance.addCandidate(accounts.hashMessage(message),{ from: App.account });
+     return instance.addMessage(message,{ from: App.account });
     }).then(function(result) {
       // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
-      location.reload();
+      $('#message').val("");
+       var messagesResults = $("#messagesResult");
+      var messagesTemplate = "<tr><td>" + message + "</td></tr>"
+      messagesResults.prepend(messagesTemplate);
+
     }).catch(function(err) {
       console.error(err);
     });
